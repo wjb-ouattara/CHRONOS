@@ -1,9 +1,118 @@
 /* Point d'entrée CSS unique. Tailwind v4 se configure ici (« CSS-first »),
-   il n'y a plus de tailwind.config.js. */
+   il n'y a pas de tailwind.config.js. */
 @import 'tailwindcss';
 
-/* Les tokens de design (couleurs, typographie, espacements) seront définis
-   à l'étape 2 dans ce bloc. Règle du projet : aucune couleur en dur dans
-   les composants, uniquement des tokens. */
+/* Polices auto-hébergées (aucune requête vers un service tiers). Seuls les
+   sous-ensembles de caractères réellement affichés sont téléchargés. */
+@import '@fontsource-variable/fraunces/opsz.css';
+@import '@fontsource-variable/instrument-sans/index.css';
+@import '@fontsource/ibm-plex-mono/400.css';
+@import '@fontsource/ibm-plex-mono/500.css';
+
+@import './themes.css';
+
+/*
+ * `inline` : l'utilitaire `bg-surface` produit `background-color:
+ * var(--theme-surface)` et non `var(--color-surface)`. La variable est donc
+ * résolue sur l'élément lui-même, ce qui permet d'imbriquer un thème dans
+ * un autre (data-theme sur n'importe quel élément).
+ */
+@theme inline {
+  /* On retire TOUTES les couleurs par défaut de Tailwind : `bg-red-500`
+     n'existe plus, seules les couleurs du projet sont disponibles. */
+  --color-*: initial;
+  --color-canvas: var(--theme-canvas);
+  --color-surface: var(--theme-surface);
+  --color-surface-raised: var(--theme-surface-raised);
+  --color-line: var(--theme-line);
+  --color-line-strong: var(--theme-line-strong);
+  --color-ink: var(--theme-ink);
+  --color-ink-muted: var(--theme-ink-muted);
+  --color-accent: var(--theme-accent);
+  --color-on-accent: var(--theme-on-accent);
+  --color-stamp: var(--theme-stamp);
+  --color-verdict-yes: var(--theme-verdict-yes);
+  --color-verdict-no: var(--theme-verdict-no);
+  --color-verdict-unsure: var(--theme-verdict-unsure);
+  --color-danger: var(--theme-danger);
+  --color-transparent: transparent;
+  --color-current: currentColor;
+}
+
 @theme {
+  /* --- Typographie --- */
+  --font-*: initial;
+  --font-display: 'Fraunces Variable', 'Iowan Old Style', Georgia, serif;
+  --font-sans: 'Instrument Sans Variable', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, 'Cascadia Mono', monospace;
+  /* Chiffres tabulaires (alignés en colonne) et zéro barré pour les données. */
+  --font-mono--font-feature-settings: 'tnum' 1, 'zero' 1;
+
+  /* Échelle typographique : taille + interligne associé. */
+  --text-*: initial;
+  --text-2xs: 0.6875rem; /* 11 px : bande caméra-piège */
+  --text-2xs--line-height: 1rem;
+  --text-xs: 0.75rem;
+  --text-xs--line-height: 1rem;
+  --text-sm: 0.875rem;
+  --text-sm--line-height: 1.25rem;
+  --text-base: 1rem;
+  --text-base--line-height: 1.5rem;
+  --text-lg: 1.125rem;
+  --text-lg--line-height: 1.625rem;
+  --text-xl: 1.375rem;
+  --text-xl--line-height: 1.875rem;
+  --text-2xl: 1.75rem;
+  --text-2xl--line-height: 2.25rem;
+  --text-3xl: 2.25rem;
+  --text-3xl--line-height: 2.625rem;
+  --text-4xl: 3rem;
+  --text-4xl--line-height: 3.25rem;
+
+  /* Espacement serré pour la bande caméra (capitales en monospace). */
+  --tracking-stamp: 0.08em;
+
+  /* --- Formes : angles presque droits, effet instrument --- */
+  --radius-*: initial;
+  --radius-xs: 2px;
+  --radius-sm: 3px;
+  --radius-md: 4px;
+  --radius-lg: 6px;
+  --radius-full: 9999px;
+
+  /* Une seule ombre, très discrète (pas d'ombres portées lourdes). */
+  --shadow-*: initial;
+  --shadow-raised: 0 1px 0 0 rgb(0 0 0 / 0.25);
+
+  /* Courbe de mouvement unique, sans rebond. */
+  --ease-field: cubic-bezier(0.2, 0, 0, 1);
+
+  /* Espacement : on garde la règle Tailwind (multiples de 4 px). */
+  --spacing: 0.25rem;
+}
+
+@layer base {
+  body {
+    @apply bg-canvas font-sans text-ink antialiased;
+  }
+
+  /* Focus visible partout, cohérent, en couleur d'accent. Uniquement au
+     clavier (`:focus-visible`), pas au clic de souris. */
+  :focus-visible {
+    outline: 2px solid var(--theme-accent);
+    outline-offset: 2px;
+  }
+
+  /* Respect de `prefers-reduced-motion` : on coupe les transitions et
+     animations CSS pour les personnes qui le demandent au système. */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
 }

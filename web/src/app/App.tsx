@@ -1,12 +1,13 @@
-import { strings } from '@/content/strings';
+import { RouterProvider } from 'react-router';
 
-/** Composant racine. Provisoire : le routage arrivera à l'étape 5. */
+import { router } from './router';
+import { ThemeProvider } from './theme/ThemeProvider';
+
+/** Composant racine : les fournisseurs globaux, puis le routeur. */
 export function App() {
   return (
-    <main className="mx-auto max-w-3xl p-8">
-      <p>{strings.demo.banner}</p>
-      <h1 className="text-3xl font-semibold">{strings.app.name}</h1>
-      <p className="mt-2">{strings.app.tagline}</p>
-    </main>
+    <ThemeProvider>
+      <RouterProvider router={router} />
+    </ThemeProvider>
   );
 }

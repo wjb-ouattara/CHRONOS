@@ -1,0 +1,90 @@
+/*
+ * Couleurs de Chronos, sur trois niveaux :
+ *
+ *   1. PALETTE (--palette-*) : les teintes brutes. Jamais utilisées
+ *      directement dans un composant.
+ *   2. THÈME (--theme-*) : le rôle de chaque couleur (fond, texte, accent…),
+ *      redéfini pour chaque thème à partir de la palette.
+ *   3. TAILWIND (--color-*, dans index.css) : expose les rôles sous forme
+ *      d'utilitaires (`bg-surface`, `text-ink`…).
+ *
+ * Les contrastes WCAG sont vérifiés automatiquement par tokens.test.ts :
+ * toute modification ici est contrôlée par `npm run test`.
+ */
+
+:root {
+  /* Forêt de nuit */
+  --palette-canopy-950: #0b100d;
+  --palette-canopy-900: #121a15;
+  --palette-canopy-800: #18231c;
+  --palette-moss-700: #2a3a30;
+  --palette-moss-500: #647a6b;
+  --palette-mist-100: #e8ede4;
+  --palette-mist-400: #9aa89c;
+  --palette-phosphor: #c6f36b; /* vert de vision nocturne */
+  --palette-amber: #f2b544; /* bande caméra-piège */
+  --palette-lagoon: #5fd4b8; /* « oui » : vert d'eau, distinct du phosphore */
+  --palette-coral: #f2766b;
+  --palette-lilac: #b7a8f0;
+
+  /* Papier de terrain */
+  --palette-paper-50: #faf7ef;
+  --palette-paper-100: #f3efe4;
+  --palette-paper-200: #eae4d5;
+  --palette-paper-300: #d6cebb;
+  --palette-paper-600: #7d7562;
+  --palette-ink-900: #1c2a21;
+  --palette-ink-600: #4f5c52;
+  --palette-olive-700: #4a6614;
+  --palette-ochre-700: #835400;
+  --palette-lagoon-800: #1d6b59;
+  --palette-brick-700: #a3352b;
+  --palette-violet-700: #5a4aa3;
+}
+
+/*
+ * Thème sombre « Station de terrain, de nuit » (par défaut).
+ * `:root` et `[data-theme='dark']` ont la même spécificité : le bloc clair,
+ * écrit après, l'emporte quand <html data-theme="light">. Un élément
+ * imbriqué peut aussi forcer son propre thème (utilisé par la page /design).
+ */
+:root,
+[data-theme='dark'] {
+  color-scheme: dark; /* barres de défilement et contrôles natifs sombres */
+
+  --theme-canvas: var(--palette-canopy-950); /* fond de page */
+  --theme-surface: var(--palette-canopy-900); /* panneaux */
+  --theme-surface-raised: var(--palette-canopy-800); /* cartes, menus */
+  --theme-line: var(--palette-moss-700); /* séparateurs décoratifs */
+  --theme-line-strong: var(--palette-moss-500); /* bordures de contrôles (≥ 3:1) */
+  --theme-ink: var(--palette-mist-100); /* texte principal */
+  --theme-ink-muted: var(--palette-mist-400); /* texte secondaire */
+  --theme-accent: var(--palette-phosphor); /* focus, sélection, instant clé */
+  --theme-on-accent: var(--palette-canopy-950); /* texte posé sur l'accent */
+  --theme-stamp: var(--palette-amber); /* bande caméra, horodatages */
+  --theme-verdict-yes: var(--palette-lagoon);
+  --theme-verdict-no: var(--palette-coral);
+  --theme-verdict-unsure: var(--palette-lilac);
+  --theme-danger: var(--palette-coral); /* erreurs */
+}
+
+/* Thème clair « papier de terrain » : accents désaturés et assombris
+   pour rester lisibles sur le crème. */
+[data-theme='light'] {
+  color-scheme: light;
+
+  --theme-canvas: var(--palette-paper-100);
+  --theme-surface: var(--palette-paper-200);
+  --theme-surface-raised: var(--palette-paper-50);
+  --theme-line: var(--palette-paper-300);
+  --theme-line-strong: var(--palette-paper-600);
+  --theme-ink: var(--palette-ink-900);
+  --theme-ink-muted: var(--palette-ink-600);
+  --theme-accent: var(--palette-olive-700);
+  --theme-on-accent: var(--palette-paper-50);
+  --theme-stamp: var(--palette-ochre-700);
+  --theme-verdict-yes: var(--palette-lagoon-800);
+  --theme-verdict-no: var(--palette-brick-700);
+  --theme-verdict-unsure: var(--palette-violet-700);
+  --theme-danger: var(--palette-brick-700);
+}

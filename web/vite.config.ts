@@ -16,7 +16,9 @@ export default defineConfig({
   test: {
     environment: 'jsdom', // DOM simulé dans Node
     setupFiles: ['./src/test/setup.ts'],
-    css: false, // inutile de compiler Tailwind pendant les tests
+    // Les fichiers CSS sont remplacés par du vide pendant les tests (plus rapide),
+    // sauf themes.css, que les tests de contraste lisent avec `?raw`.
+    css: { include: [/themes\.css/] },
     restoreMocks: true,
   },
 });

@@ -1,10 +1,21 @@
 <!doctype html>
-<html lang="fr">
+<html lang="fr" data-theme="dark">
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Chronos Ethogram</title>
+    <!--
+      Anti-flash : applique le thème enregistré AVANT l'affichage de la page.
+      Seule exception documentée à la règle « localStorage via src/lib/storage.ts ».
+      La clé doit rester identique à storageKeys.theme (vérifié par storage.test.ts).
+    -->
+    <script>
+      try {
+        var t = localStorage.getItem('chronos:theme');
+        if (t === 'light' || t === 'dark') document.documentElement.dataset.theme = t;
+      } catch (e) {}
+    </script>
   </head>
   <body>
     <div id="root"></div>
