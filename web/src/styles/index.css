@@ -1,0 +1,9 @@
+/* Point d'entrée CSS unique. Tailwind v4 se configure ici (« CSS-first »),
+   il n'y a plus de tailwind.config.js. */
+@import 'tailwindcss';
+
+/* Les tokens de design (couleurs, typographie, espacements) seront définis
+   à l'étape 2 dans ce bloc. Règle du projet : aucune couleur en dur dans
+   les composants, uniquement des tokens. */
+@theme {
+}
