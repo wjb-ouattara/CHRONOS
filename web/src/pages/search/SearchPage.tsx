@@ -15,10 +15,13 @@ import { PageTitle } from '@/components/ui/PageTitle';
 import { EmptyState, ErrorState } from '@/components/ui/states';
 import { strings } from '@/content/strings';
 import type { Verdict } from '@/domain/types';
+import { cn } from '@/lib/cn';
 
 import { EthogramIndex } from './EthogramIndex';
+import { Loupe } from './Loupe';
 import { ResultsGrid, ResultsSkeleton } from './ResultsGrid';
 import { SearchBar } from './SearchBar';
+import { useReview } from './useReview';
 
 const t = strings.pages.search;
 
@@ -45,18 +48,30 @@ export function SearchPage() {
     });
   };
 
+  const review = useReview(queryId, search.data?.results, validations.data);
+  const selectedClip = review.selected && clips.data?.get(review.selected.clipId);
+  const loupeOpen = review.selected !== undefined && selectedClip !== undefined;
+
   const current = search.data?.query;
   const verdicts = new Map<string, Verdict>(
     (validations.data ?? []).map((v) => [v.clipId, v.verdict]),
   );
+  const counts = { yes: 0, no: 0, unsure: 0 };
+  for (const verdict of verdicts.values()) counts[verdict]++;
   const behaviourLabel = behaviours.data?.find((b) => b.code === current?.behaviourCode)?.label;
 
   return (
     <>
       <PageTitle>{t.title}</PageTitle>
 
-      <div className="mt-6 grid grid-cols-[minmax(0,1fr)] gap-8 lg:grid-cols-[15rem_minmax(0,1fr)]">
-        <div className="lg:sticky lg:top-28 lg:self-start">
+      <div
+        className={cn(
+          'mt-6 grid grid-cols-[minmax(0,1fr)] gap-8 lg:grid-cols-[15rem_minmax(0,1fr)]',
+          // Loupe ouverte sur grand écran : l'éthogramme se replie, la loupe prend sa colonne.
+          loupeOpen && 'xl:grid-cols-[minmax(0,1fr)_26rem]',
+        )}
+      >
+        <div className={cn('lg:sticky lg:top-28 lg:self-start', loupeOpen && 'xl:hidden')}>
           <EthogramIndex
             behaviours={behaviours.data}
             isLoading={behaviours.isPending}
@@ -97,6 +112,10 @@ export function SearchPage() {
               <p className="font-mono text-xs text-ink-muted">
                 {t.summary(search.data?.results.length ?? 0, search.data?.iteration ?? 0)}
               </p>
+              {/* Compteur de session : où en est la revue de cette recherche. */}
+              <p className="w-full font-mono text-xs text-ink">
+                {t.session(verdicts.size, counts.yes, counts.no, counts.unsure)}
+              </p>
             </div>
           )}
 
@@ -111,12 +130,44 @@ export function SearchPage() {
             search={search}
             clips={clips}
             verdicts={verdicts}
+            selectedId={review.selected?.clipId ?? null}
+            onOpen={(clipId) => {
+              review.open(clipId);
+            }}
+            compact={loupeOpen}
             onReset={() => {
               setParams({});
             }}
           />
         </div>
+
+        {review.selected && selectedClip && (
+          // Grand écran : colonne collante à droite. Plus étroit : panneau
+          // superposé à droite, sous l'en-tête.
+          <div className="fixed top-[4.85rem] right-0 bottom-0 z-30 w-full max-w-md overflow-y-auto border-l border-line bg-surface p-5 xl:sticky xl:top-28 xl:bottom-auto xl:z-auto xl:max-h-[calc(100dvh-8rem)] xl:max-w-none xl:self-start xl:rounded-lg xl:border">
+            <Loupe
+              key={review.selected.clipId}
+              clip={selectedClip}
+              result={review.selected}
+              validation={validations.data?.find((v) => v.clipId === selectedClip.id)}
+              onVerdict={(verdict, note) => {
+                review.validate(selectedClip.id, verdict, note);
+              }}
+              onNoteChange={(note) => {
+                review.updateNote(selectedClip.id, note);
+              }}
+              onClose={review.close}
+              saveFailed={review.saveFailed}
+              onRetrySave={review.retrySave}
+            />
+          </div>
+        )}
       </div>
+
+      {/* Annonce discrète pour les lecteurs d'écran après chaque verdict. */}
+      <p aria-live="polite" className="sr-only">
+        {review.announcement}
+      </p>
     </>
   );
 }
@@ -131,6 +182,9 @@ interface SearchBodyProps {
   search: ReturnType<typeof useSearchResults>;
   clips: ReturnType<typeof useClipsById>;
   verdicts: ReadonlyMap<string, Verdict>;
+  selectedId: string | null;
+  onOpen: (clipId: string) => void;
+  compact: boolean;
 }
 
 /** Choisit l'état à afficher : chargement, erreur, introuvable, départ ou résultats. */
@@ -144,6 +198,9 @@ function SearchBody({
   search,
   clips,
   verdicts,
+  selectedId,
+  onOpen,
+  compact,
 }: SearchBodyProps) {
   if (isRunning) return <ResultsSkeleton />;
 
@@ -190,6 +247,9 @@ function SearchBody({
       results={search.data.results}
       clipsById={clips.data}
       verdicts={verdicts}
+      selectedId={selectedId}
+      onOpen={onOpen}
+      compact={compact}
     />
   );
 }

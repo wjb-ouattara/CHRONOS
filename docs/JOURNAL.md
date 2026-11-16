@@ -37,3 +37,9 @@ Trois lignes par session : fait, appris, prochaine action.
 - **Fait :** étape 6, TanStack Query + ApiProvider, écran Recherche (barre, éthogramme en index, grille de cartes par lots de 24), recherche dans l'adresse `?q=`, états vide/chargement/erreur/introuvable.
 - **Appris :** des `<span>` collés donnent un nom accessible collé (« TOOLUsage ») ; une grille sans colonne explicite s'élargit au contenu le plus large et déborde en tablette.
 - **Prochaine action :** étape 7, loupe et validation au clavier (J/K, Y/N/U).
+
+## 2026-11-16 (étape 7)
+
+- **Fait :** étape 7, loupe (lecteur simulé, frise agrandie, verdict, note, métadonnées), validation au clavier J/K/Y/N/U/P/Échap avec passage automatique, mise à jour optimiste avec retour en arrière, compteur de session, clip ouvert dans l'adresse.
+- **Appris :** des enregistrements qui se chevauchent imposent de ne relire le cache qu'après le dernier ; un « bouton étiré » rend une carte entière cliquable avec un seul élément focalisable.
+- **Prochaine action :** étape 8, reclassement animé (« Apprendre de mes validations », Motion).

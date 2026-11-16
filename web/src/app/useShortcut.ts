@@ -26,6 +26,9 @@ export function useShortcut(id: ShortcutId, action: () => void, { enabled = true
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.defaultPrevented || event.repeat) return; // touche maintenue : une seule fois
       if (isTypingTarget(event.target) || !matchesShortcut(event, key)) return;
+      // Une fenêtre modale est ouverte : seuls ses propres contrôles agissent
+      // (sauf « ? », qui ferme l'aide). Sinon Échap fermerait aussi la loupe derrière.
+      if (id !== 'help' && document.querySelector('dialog[open]')) return;
       event.preventDefault();
       actionRef.current();
     };

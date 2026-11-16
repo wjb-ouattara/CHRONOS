@@ -124,4 +124,12 @@ describe('API fictive', () => {
     // L'instant clé exporté est celui affiché à l'écran.
     expect(rows[0]?.[col('best_moment_s')]).toBe(String(first.bestMomentS));
   });
+
+  it('deux recherches identiques donnent les mêmes instants clés', async () => {
+    const api = testApi();
+    const a = await api.search({ text: '', behaviourCode: 'TOOL' });
+    const b = await api.search({ text: '', behaviourCode: 'TOOL' });
+    expect(a.query.id).not.toBe(b.query.id);
+    expect(b.results).toEqual(a.results);
+  });
 });

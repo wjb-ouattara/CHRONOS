@@ -40,3 +40,25 @@ if (typeof HTMLDialogElement !== 'undefined' && !('showModal' in HTMLDialogEleme
     if (!cancel.defaultPrevented) (dialog as HTMLDialogElement).close();
   });
 }
+
+/* Autres API de navigateur absentes de jsdom, simulées pour les tests. */
+// (Test via typeof : TypeScript croit, à tort, que la méthode existe toujours.)
+if (typeof Element.prototype.scrollIntoView !== 'function') {
+  Object.defineProperty(Element.prototype, 'scrollIntoView', { value: () => undefined });
+}
+if (typeof window.matchMedia !== 'function') {
+  // Par défaut : aucune préférence particulière (ex. pas de mouvement réduit).
+  Object.defineProperty(window, 'matchMedia', {
+    writable: true,
+    value: (query: string) => ({
+      matches: false,
+      media: query,
+      onchange: null,
+      addEventListener: () => undefined,
+      removeEventListener: () => undefined,
+      addListener: () => undefined,
+      removeListener: () => undefined,
+      dispatchEvent: () => false,
+    }),
+  });
+}

@@ -3,10 +3,10 @@
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
-import type { SearchResponse } from '@/domain/types';
+import type { SearchResponse, Validation } from '@/domain/types';
 
 import { useApi } from './api-context';
-import type { SearchInput } from './types';
+import type { SearchInput, ValidationInput } from './types';
 
 /**
  * Fabrique des clés de cache. Les centraliser évite les fautes de frappe et
@@ -67,5 +67,52 @@ export function useRunSearch() {
       queryClient.setQueryData(queryKeys.search(response.query.id), response);
       queryClient.setQueryData(queryKeys.validations(response.query.id), []);
     },
+  });
+}
+
+/**
+ * Enregistre un verdict avec une mise à jour OPTIMISTE : le cache est
+ * modifié avant la réponse de l'API, le badge change donc immédiatement.
+ * En cas d'échec, on restaure l'état précédent (retour en arrière).
+ */
+export function useSaveValidation(queryId: string | null) {
+  const api = useApi();
+  const queryClient = useQueryClient();
+  const key = queryKeys.validations(queryId ?? '');
+  const mutationKey = ['saveValidation', queryId ?? ''] as const;
+
+  return useMutation({
+    mutationKey,
+    mutationFn: (input: ValidationInput) => api.saveValidation(input),
+
+    onMutate: async (input) => {
+      // 1. On annule un éventuel chargement en cours, qui écraserait notre mise à jour.
+      await queryClient.cancelQueries({ queryKey: key });
+      // 2. On garde une copie de l'état actuel, pour pouvoir revenir en arrière.
+      const previous = queryClient.getQueryData<Validation[]>(key);
+      // 3. On applique le résultat attendu : la nouvelle validation remplace l'ancienne.
+      const optimistic: Validation = {
+        ...input,
+        validatedAt: new Date().toISOString(),
+      };
+      queryClient.setQueryData<Validation[]>(key, (current = []) => [
+        ...current.filter((v) => v.clipId !== input.clipId),
+        optimistic,
+      ]);
+      return { previous };
+    },
+
+    onError: (_error, _input, context) => {
+      queryClient.setQueryData(key, context?.previous);
+    },
+
+    // Succès ou échec : on resynchronise avec la source de vérité (l'API)…
+    // mais seulement quand c'est le DERNIER enregistrement en cours. Avec la
+    // validation au clavier, plusieurs enregistrements se chevauchent : une
+    // relecture trop tôt effacerait brièvement les badges des suivants.
+    onSettled: () =>
+      queryClient.isMutating({ mutationKey }) === 1
+        ? queryClient.invalidateQueries({ queryKey: key })
+        : undefined,
   });
 }

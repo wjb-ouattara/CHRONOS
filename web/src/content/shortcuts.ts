@@ -39,7 +39,7 @@ export const shortcuts = [
     label: 'J',
     description: 'Clip suivant',
     group: 'search',
-    available: false,
+    available: true,
   },
   {
     id: 'previous',
@@ -47,7 +47,7 @@ export const shortcuts = [
     label: 'K',
     description: 'Clip précédent',
     group: 'search',
-    available: false,
+    available: true,
   },
   {
     id: 'yes',
@@ -55,7 +55,7 @@ export const shortcuts = [
     label: 'Y',
     description: 'Valider « oui »',
     group: 'search',
-    available: false,
+    available: true,
   },
   {
     id: 'no',
@@ -63,7 +63,7 @@ export const shortcuts = [
     label: 'N',
     description: 'Valider « non »',
     group: 'search',
-    available: false,
+    available: true,
   },
   {
     id: 'unsure',
@@ -71,7 +71,23 @@ export const shortcuts = [
     label: 'U',
     description: 'Valider « incertain »',
     group: 'search',
-    available: false,
+    available: true,
+  },
+  {
+    id: 'playPause',
+    key: 'p',
+    label: 'P',
+    description: 'Lecture / pause dans la loupe',
+    group: 'search',
+    available: true,
+  },
+  {
+    id: 'close',
+    key: 'Escape',
+    label: 'Échap',
+    description: 'Fermer la loupe',
+    group: 'search',
+    available: true,
   },
   {
     id: 'rerank',

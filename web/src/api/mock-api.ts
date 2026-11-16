@@ -6,7 +6,13 @@ import { strings } from '@/content/strings';
 import type { Clip, ExportRow, SearchQuery, SearchResponse, Validation } from '@/domain/types';
 import { behaviours } from '@/mocks/behaviours';
 import { DEFAULT_SEED, generateDataset } from '@/mocks/dataset';
-import { bestMomentFor, queryVector, rankClips, rocchio } from '@/mocks/search-engine';
+import {
+  bestMomentFor,
+  normalizeText,
+  queryVector,
+  rankClips,
+  rocchio,
+} from '@/mocks/search-engine';
 import { sites } from '@/mocks/sites';
 
 import { toCsv } from './csv';
@@ -32,6 +38,14 @@ export interface MockApiOptions {
 }
 
 const e = strings.api.errors;
+
+/**
+ * Clé qui fixe la forme des courbes par seconde (et donc l'instant clé).
+ * Dérivée du CONTENU de la recherche, pas de son identifiant : deux
+ * recherches identiques donnent les mêmes instants clés.
+ */
+const curveKey = (query: SearchQuery) =>
+  `${query.behaviourCode ?? ''}|${normalizeText(query.text.trim())}`;
 
 export function createMockApi(options: MockApiOptions = {}): ChronosApi {
   const {
@@ -92,7 +106,7 @@ export function createMockApi(options: MockApiOptions = {}): ChronosApi {
     return {
       query,
       iteration: stored.iteration,
-      results: rankClips(dataset, vector, query.id, validated),
+      results: rankClips(dataset, vector, curveKey(query), validated),
     };
   };
 
@@ -193,7 +207,7 @@ export function createMockApi(options: MockApiOptions = {}): ChronosApi {
               camera_id: clip.cameraId,
               species: clip.species,
               recorded_at: clip.recordedAt,
-              best_moment_s: bestMomentFor(query.id, clip),
+              best_moment_s: bestMomentFor(curveKey(query), clip),
               verdict: v.verdict,
               validated_at: v.validatedAt,
               note: v.note ?? null,

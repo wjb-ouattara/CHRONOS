@@ -1,5 +1,3 @@
-import { useId } from 'react';
-
 import { VerdictBadge } from '@/components/ui/VerdictBadge';
 import { strings } from '@/content/strings';
 import type { Clip, SearchResult, Verdict } from '@/domain/types';
@@ -17,19 +15,34 @@ interface ClipCardProps {
   result: SearchResult;
   /** `null` : pas encore validé. */
   verdict: Verdict | null;
+  /** Carte ouverte dans la loupe. */
+  selected?: boolean;
+  /** Absent : carte non cliquable (ex. vitrine /design). */
+  onOpen?: (clipId: string) => void;
   className?: string;
 }
 
 /** Carte d'un résultat : vignette, bande caméra, rang, score, frise et verdict. */
-export function ClipCard({ clip, result, verdict, className }: ClipCardProps) {
-  const titleId = useId();
-
+export function ClipCard({
+  clip,
+  result,
+  verdict,
+  selected = false,
+  onOpen,
+  className,
+}: ClipCardProps) {
   return (
     <article
-      aria-labelledby={titleId}
+      aria-label={t.label(result.rank, clip.id)}
       data-clip-id={clip.id}
       className={cn(
-        'overflow-hidden rounded-md border border-line bg-surface-raised',
+        // `relative` : le bouton « étiré » du titre couvre toute la carte.
+        'relative overflow-hidden rounded-md border border-line bg-surface-raised',
+        'transition-[outline-color,border-color] duration-150 ease-field',
+        // Focus clavier sur le bouton → contour sur TOUTE la carte.
+        'has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-accent',
+        // Carte ouverte dans la loupe : anneau phosphore (forme + couleur).
+        selected && 'outline-2 outline-offset-2 outline-accent',
         // La verdict colore discrètement le bord : un repère de plus, jamais le seul.
         verdict === 'yes' && 'border-verdict-yes/60',
         verdict === 'no' && 'border-verdict-no/60',
@@ -49,12 +62,28 @@ export function ClipCard({ clip, result, verdict, className }: ClipCardProps) {
       />
       <div className="grid gap-2.5 p-3">
         <div className="flex items-center justify-between gap-2">
-          <h3 id={titleId} className="flex items-baseline gap-2 font-mono text-sm">
-            <span aria-hidden="true">{t.rank(result.rank)}</span>
-            <span className="text-xs text-ink-muted" aria-hidden="true">
-              {clip.id}
-            </span>
-            <span className="sr-only">{t.label(result.rank, clip.id)}</span>
+          <h3 className="font-mono text-sm">
+            {onOpen ? (
+              // « Bouton étiré » : un vrai bouton dans le titre, dont la zone de
+              // clic (::after) recouvre toute la carte. Un seul élément focalisable
+              // par carte, avec un nom clair, plutôt qu'un <article> cliquable.
+              <button
+                type="button"
+                aria-current={selected || undefined}
+                onClick={() => {
+                  onOpen(clip.id);
+                }}
+                className="flex items-baseline gap-2 after:absolute after:inset-0 after:cursor-pointer after:content-[''] focus-visible:outline-none"
+              >
+                <CardLabel rank={result.rank} clipId={clip.id} />
+                <span className="sr-only">{t.open(result.rank, clip.id)}</span>
+              </button>
+            ) : (
+              <span className="flex items-baseline gap-2">
+                <CardLabel rank={result.rank} clipId={clip.id} />
+                <span className="sr-only">{t.label(result.rank, clip.id)}</span>
+              </span>
+            )}
           </h3>
           <VerdictBadge verdict={verdict} size="sm" />
         </div>
@@ -65,5 +94,17 @@ export function ClipCard({ clip, result, verdict, className }: ClipCardProps) {
         </p>
       </div>
     </article>
+  );
+}
+
+/** Rang et identifiant, visuels (le nom accessible est fourni à part). */
+function CardLabel({ rank, clipId }: { rank: number; clipId: string }) {
+  return (
+    <>
+      <span aria-hidden="true">{t.rank(rank)}</span>
+      <span className="text-xs text-ink-muted" aria-hidden="true">
+        {clipId}
+      </span>
+    </>
   );
 }
