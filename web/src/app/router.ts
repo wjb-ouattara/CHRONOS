@@ -1,6 +1,6 @@
 import { createBrowserRouter, type RouteObject } from 'react-router';
 
-import { DesignPage } from '@/pages/DesignPage';
+import { DesignPage } from '@/pages/design/DesignPage';
 import { HomePage } from '@/pages/HomePage';
 
 // Routage minimal pour l'étape 2. La mise en page commune (en-tête,

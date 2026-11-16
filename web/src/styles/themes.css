@@ -40,6 +40,36 @@
   --palette-lagoon-800: #1d6b59;
   --palette-brick-700: #a3352b;
   --palette-violet-700: #5a4aa3;
+
+  /* Vision infrarouge (nuit) et lumière de jour, pour les vignettes procédurales */
+  --palette-ir-night-900: #0c130f;
+  --palette-ir-night-700: #1e2b23;
+  --palette-ir-night-500: #3b5244;
+  --palette-ir-night-300: #7a9682;
+  --palette-ir-night-100: #c2dbb8;
+  --palette-sun-900: #241a0f;
+  --palette-sun-700: #574124;
+  --palette-sun-500: #8d6c3c;
+  --palette-sun-300: #c9a266;
+  --palette-sun-100: #efd8a6;
+}
+
+/*
+ * Couleurs d'IMAGE : le « contenu » des vignettes, identique dans les deux
+ * thèmes (une photo ne change pas de couleur avec le thème). Décoratives,
+ * donc hors du test de contraste. 1 = le plus sombre, 5 = le plus clair.
+ */
+:root {
+  --image-night-1: var(--palette-ir-night-900);
+  --image-night-2: var(--palette-ir-night-700);
+  --image-night-3: var(--palette-ir-night-500);
+  --image-night-4: var(--palette-ir-night-300);
+  --image-night-5: var(--palette-ir-night-100);
+  --image-day-1: var(--palette-sun-900);
+  --image-day-2: var(--palette-sun-700);
+  --image-day-3: var(--palette-sun-500);
+  --image-day-4: var(--palette-sun-300);
+  --image-day-5: var(--palette-sun-100);
 }
 
 /*

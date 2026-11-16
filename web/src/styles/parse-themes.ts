@@ -37,6 +37,7 @@ export function parseThemes(css: string): ParsedThemes {
     return block.values;
   };
 
+  // Le PREMIER bloc `:root` est la palette (le second contient les couleurs d'image).
   const palette = find((s) => s === ':root');
 
   // Remplace `var(--palette-x)` par la valeur brute ; retire le préfixe `theme-`.

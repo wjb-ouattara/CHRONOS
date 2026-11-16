@@ -1,0 +1,44 @@
+# --- Dépendances et artefacts de build ---
+node_modules/
+dist/
+coverage/
+*.tsbuildinfo
+*.log
+*.local
+
+# --- Secrets ---
+.env
+.env.*
+!.env.example
+
+# --- Données : JAMAIS dans le dépôt ---
+# PanAf20K est sous licence non commerciale : aucune vidéo, image ou
+# extrait réel ne doit être versionné.
+data/
+frames/
+*.mp4
+*.avi
+*.mov
+*.mkv
+*.webm
+*.jpg
+*.jpeg
+*.png
+!web/public/**/*.png
+
+# --- Python (phases suivantes) ---
+__pycache__/
+*.py[cod]
+.venv/
+.ipynb_checkpoints/
+
+# --- Éditeurs et système ---
+.vscode/*
+!.vscode/extensions.json
+.idea/
+.DS_Store
+Thumbs.db
+
+# --- Fichiers locaux pour Claude Code (non publiés) ---
+CLAUDE.md
+.claude/

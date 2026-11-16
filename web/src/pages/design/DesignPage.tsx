@@ -1,4 +1,3 @@
-import type { ReactNode } from 'react';
 import { Link } from 'react-router';
 
 import type { Theme } from '@/app/theme/theme';
@@ -8,6 +7,9 @@ import { contrastRatio } from '@/lib/contrast';
 import { parseThemes } from '@/styles/parse-themes';
 import themesCss from '@/styles/themes.css?raw';
 import { colorTokens, contrastPairs, fontTokens, radiusTokens, textSizes } from '@/styles/tokens';
+
+import { ComponentGallery } from './ComponentGallery';
+import { Section, ThemePanel } from './parts';
 
 const t = strings.design;
 // Analysé une seule fois, au chargement du module.
@@ -138,44 +140,9 @@ export function DesignPage() {
           </ul>
         </Section>
       </div>
+
+      <ComponentGallery />
     </main>
-  );
-}
-
-function Section({
-  title,
-  intro,
-  children,
-}: {
-  title: string;
-  intro?: string;
-  children: ReactNode;
-}) {
-  return (
-    <section className="mt-12">
-      <h2 className="font-display text-2xl">{title}</h2>
-      {intro && <p className="mt-1 mb-6 max-w-prose text-sm text-ink-muted">{intro}</p>}
-      {!intro && <div className="mb-6" />}
-      {children}
-    </section>
-  );
-}
-
-/** Panneau qui force un thème : tout ce qu'il contient utilise ses tokens. */
-function ThemePanel({
-  theme,
-  label,
-  children,
-}: {
-  theme: Theme;
-  label: string;
-  children: ReactNode;
-}) {
-  return (
-    <div data-theme={theme} className="rounded-lg border border-line bg-canvas p-5 text-ink">
-      <p className="mb-4 font-mono text-xs tracking-stamp text-stamp uppercase">{label}</p>
-      {children}
-    </div>
   );
 }
 
