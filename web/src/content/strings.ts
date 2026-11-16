@@ -119,4 +119,13 @@ export const strings = {
   button: {
     loading: 'Chargement…',
   },
+  api: {
+    errors: {
+      unavailable: 'Le service ne répond pas. Réessayez dans un instant.',
+      queryNotFound: 'Cette recherche est introuvable.',
+      clipNotFound: 'Ce clip est introuvable.',
+      emptyQuery: 'Décrivez un comportement ou choisissez-en un dans l’éthogramme.',
+      unknownBehaviour: 'Ce comportement ne fait pas partie de l’éthogramme.',
+    },
+  },
 } as const;

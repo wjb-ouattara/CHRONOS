@@ -24,3 +24,33 @@ export const between = (random: Random, min: number, max: number) => min + rando
 /** Entier dans [min, max] (bornes incluses). */
 export const integerBetween = (random: Random, min: number, max: number) =>
   Math.floor(between(random, min, max + 1));
+
+/**
+ * Transforme un texte en graine entière stable (algorithme FNV-1a 32 bits).
+ * Permet par ex. de dériver une graine propre à chaque couple (requête, clip).
+ */
+export function hashString(text: string): number {
+  let hash = 0x811c9dc5;
+  for (let i = 0; i < text.length; i++) {
+    hash ^= text.charCodeAt(i);
+    hash = Math.imul(hash, 0x01000193);
+  }
+  return hash >>> 0;
+}
+
+/** Tire un élément selon des poids (plus le poids est grand, plus il sort souvent). */
+export function weightedPick<T>(
+  random: Random,
+  items: readonly T[],
+  weight: (item: T) => number,
+): T {
+  const total = items.reduce((sum, item) => sum + weight(item), 0);
+  let threshold = random() * total;
+  for (const item of items) {
+    threshold -= weight(item);
+    if (threshold < 0) return item;
+  }
+  const last = items.at(-1);
+  if (last === undefined) throw new Error('weightedPick : liste vide');
+  return last;
+}
