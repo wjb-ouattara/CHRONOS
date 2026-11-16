@@ -33,9 +33,38 @@ export const strings = {
     },
     search: {
       title: 'Recherche',
-      emptyTitle: 'Recherche à venir',
-      emptyBody:
-        'La barre de recherche, l’éthogramme et la grille de résultats arrivent à l’étape 6.',
+      fieldLabel: 'Décrire un comportement',
+      placeholder: 'ex. chimpanzé cassant des noix avec une pierre',
+      submit: 'Chercher',
+      ethogram: 'Éthogramme',
+      ethogramHint: 'Cliquez un comportement pour le rechercher.',
+      frequency: { head: 'fréquent', middle: 'moyen', tail: 'rare' },
+      ethogramError: 'Éthogramme indisponible',
+      startTitle: 'Que cherchez-vous ?',
+      startBody:
+        'Décrivez un comportement en quelques mots, ou choisissez-le dans l’éthogramme. Quelques exemples :',
+      examples: [
+        { text: 'chimpanzé cassant des noix avec une pierre', behaviourCode: null },
+        { text: '', behaviourCode: 'TOOL' },
+        { text: 'jeune porté sur le dos', behaviourCode: null },
+      ],
+      freeText: 'Texte libre',
+      summary: (count: number, iteration: number) =>
+        `${String(count)} clips · itération ${String(iteration)}`,
+      resultsLabel: 'Résultats classés par pertinence',
+      showMore: (n: number) => `Afficher ${String(n)} de plus`,
+      shown: (shown: number, total: number) => `${String(shown)} sur ${String(total)}`,
+      errorTitle: 'La recherche a échoué',
+      notFoundTitle: 'Recherche introuvable',
+      notFoundBody: 'Cette recherche n’existe pas ou plus sur cet appareil.',
+      newSearch: 'Nouvelle recherche',
+      noResults: 'Aucun clip pour cette recherche.',
+    },
+    card: {
+      rank: (rank: number) => `#${String(rank).padStart(2, '0')}`,
+      scoreLabel: 'score démo',
+      scoreTitle: 'Score simulé à partir de données fictives : ce n’est pas un résultat réel.',
+      label: (rank: number, clipId: string) => `Rang ${String(rank)}, clip ${clipId}`,
     },
     session: {
       title: 'Session & export',

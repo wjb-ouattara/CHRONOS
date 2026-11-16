@@ -31,7 +31,7 @@ export const shortcuts = [
     label: '/',
     description: 'Aller à la barre de recherche',
     group: 'search',
-    available: false,
+    available: true,
   },
   {
     id: 'next',

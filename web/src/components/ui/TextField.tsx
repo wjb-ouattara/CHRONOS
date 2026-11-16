@@ -1,5 +1,5 @@
 import type { LucideIcon } from 'lucide-react';
-import { useId, type InputHTMLAttributes } from 'react';
+import { useId, type InputHTMLAttributes, type Ref } from 'react';
 
 import { cn } from '@/lib/cn';
 
@@ -12,6 +12,8 @@ interface TextFieldProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'id
   /** Message d'erreur : rend le champ invalide et l'annonce. */
   error?: string;
   icon?: LucideIcon;
+  /** React 19 : `ref` est une prop ordinaire, transmise ici au <input>. */
+  ref?: Ref<HTMLInputElement>;
 }
 
 export function TextField({
@@ -22,6 +24,7 @@ export function TextField({
   icon: Icon,
   className,
   type = 'text',
+  ref,
   ...rest
 }: TextFieldProps) {
   // useId() fournit un identifiant unique et stable : il relie le <label>,
@@ -45,6 +48,7 @@ export function TextField({
           />
         )}
         <input
+          ref={ref}
           id={id}
           type={type}
           aria-invalid={error ? true : undefined}

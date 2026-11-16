@@ -11,6 +11,12 @@ export interface CameraStripProps {
   temperatureC: number | null;
   moonPhase: number | null;
   isNight: boolean;
+  /**
+   * Version resserrée pour les cartes étroites : heure sans les secondes et
+   * sans espacement des lettres. L'identifiant site · caméra n'est JAMAIS
+   * tronqué : c'est l'information principale de la bande.
+   */
+  compact?: boolean;
   className?: string;
 }
 
@@ -26,6 +32,7 @@ export function CameraStrip({
   temperatureC,
   moonPhase,
   isNight,
+  compact = false,
   className,
 }: CameraStripProps) {
   const { date, time } = splitLocalDateTime(recordedAt);
@@ -36,17 +43,22 @@ export function CameraStrip({
     <div
       data-theme="dark"
       className={cn(
-        'flex h-5 items-center gap-3 bg-canvas px-2 font-mono text-2xs tracking-stamp text-stamp uppercase',
+        'flex h-5 items-center bg-canvas px-2 font-mono text-2xs text-stamp uppercase',
+        compact ? 'gap-2' : 'gap-3 tracking-stamp',
         className,
       )}
     >
       {/* Version compacte, visuelle : masquée aux lecteurs d'écran… */}
-      <span aria-hidden="true" className="flex min-w-0 flex-1 items-center gap-3">
-        <span className="truncate">
+      <span
+        aria-hidden="true"
+        className={cn('flex min-w-0 flex-1 items-center', compact ? 'gap-2' : 'gap-3')}
+      >
+        <span className="shrink-0 whitespace-nowrap">
           {siteId} · {cameraId}
         </span>
-        <span className="ml-auto whitespace-nowrap">
-          {date} {time}
+        {/* Si la place manque vraiment, c'est la date qui se tronque, pas la caméra. */}
+        <span className="ml-auto min-w-0 truncate">
+          {date} {compact ? time.slice(0, 5) : time}
         </span>
         <span className="whitespace-nowrap">{temp}</span>
         {isNight && <span className="text-ink-muted">IR</span>}

@@ -1,24 +1,15 @@
 import { describe, expect, it } from 'vitest';
 
 import { parseCsv } from '@/test/parse-csv';
+import { createTestApi } from '@/test/render-app';
 
 import { EXPORT_COLUMNS } from './csv';
 import { ApiError } from './errors';
-import { createMockApi, type MockApiOptions } from './mock-api';
+import type { MockApiOptions } from './mock-api';
 import { memoryPersistence, type Persistence } from './persistence';
 
-/** API de test : aucune latence, horloge et identifiants prévisibles. */
-function testApi(persistence: Persistence = memoryPersistence(), extra: MockApiOptions = {}) {
-  let tick = 0;
-  let id = 0;
-  return createMockApi({
-    latencyMs: [0, 0],
-    now: () => new Date(Date.UTC(2026, 10, 16, 10, 0, tick++)),
-    newId: () => `q${String(++id)}`,
-    persistence,
-    ...extra,
-  });
-}
+const testApi = (persistence: Persistence = memoryPersistence(), extra: MockApiOptions = {}) =>
+  createTestApi({ persistence, ...extra });
 
 describe('API fictive', () => {
   it('liste l’éthogramme, les sites et les clips filtrés', async () => {

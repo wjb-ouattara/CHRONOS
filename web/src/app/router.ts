@@ -1,7 +1,8 @@
 import { createBrowserRouter, type RouteObject } from 'react-router';
 
 import { DesignPage } from '@/pages/design/DesignPage';
-import { CollectionPage, NotFoundPage, SearchPage, SessionPage } from '@/pages/placeholders';
+import { CollectionPage, NotFoundPage, SessionPage } from '@/pages/placeholders';
+import { SearchPage } from '@/pages/search/SearchPage';
 
 import { AppLayout } from './layout/AppLayout';
 import { RootError, ScreenError } from './layout/RouteError';

@@ -1,18 +1,10 @@
-import { render, screen, within } from '@testing-library/react';
-import { createMemoryRouter, RouterProvider } from 'react-router';
+import { screen, within } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 
-import { routes } from '@/app/router';
-import { ThemeProvider } from '@/app/theme/ThemeProvider';
 import { colorTokens, contrastPairs } from '@/styles/tokens';
+import { renderApp } from '@/test/render-app';
 
-// Routeur « en mémoire » : pas besoin d'un vrai navigateur pour aller sur /design.
-const renderAt = (path: string) =>
-  render(
-    <ThemeProvider>
-      <RouterProvider router={createMemoryRouter(routes, { initialEntries: [path] })} />
-    </ThemeProvider>,
-  );
+const renderAt = (path: string) => renderApp({ path });
 
 describe('page /design', () => {
   it('affiche le titre et la bascule de thème', () => {

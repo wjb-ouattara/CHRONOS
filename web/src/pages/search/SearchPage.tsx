@@ -1,0 +1,218 @@
+import { Search, SearchX } from 'lucide-react';
+import { useSearchParams } from 'react-router';
+
+import { ApiError } from '@/api/errors';
+import {
+  useBehaviours,
+  useClipsById,
+  useRunSearch,
+  useSearchResults,
+  useValidations,
+} from '@/api/queries';
+import type { SearchInput } from '@/api/types';
+import { Button } from '@/components/ui/Button';
+import { PageTitle } from '@/components/ui/PageTitle';
+import { EmptyState, ErrorState } from '@/components/ui/states';
+import { strings } from '@/content/strings';
+import type { Verdict } from '@/domain/types';
+
+import { EthogramIndex } from './EthogramIndex';
+import { ResultsGrid, ResultsSkeleton } from './ResultsGrid';
+import { SearchBar } from './SearchBar';
+
+const t = strings.pages.search;
+
+/**
+ * Écran Recherche. La recherche en cours vit dans l'adresse (`?q=<id>`) :
+ * un rechargement ou les boutons précédent/suivant la retrouvent.
+ */
+export function SearchPage() {
+  const [params, setParams] = useSearchParams();
+  const queryId = params.get('q');
+
+  const behaviours = useBehaviours();
+  const clips = useClipsById();
+  const search = useSearchResults(queryId);
+  const validations = useValidations(queryId);
+  const runSearch = useRunSearch();
+
+  const start = (input: SearchInput) => {
+    runSearch.mutate(input, {
+      // Nouvelle entrée d'historique : « précédent » revient à la recherche d'avant.
+      onSuccess: (response) => {
+        setParams({ q: response.query.id });
+      },
+    });
+  };
+
+  const current = search.data?.query;
+  const verdicts = new Map<string, Verdict>(
+    (validations.data ?? []).map((v) => [v.clipId, v.verdict]),
+  );
+  const behaviourLabel = behaviours.data?.find((b) => b.code === current?.behaviourCode)?.label;
+
+  return (
+    <>
+      <PageTitle>{t.title}</PageTitle>
+
+      <div className="mt-6 grid grid-cols-[minmax(0,1fr)] gap-8 lg:grid-cols-[15rem_minmax(0,1fr)]">
+        <div className="lg:sticky lg:top-28 lg:self-start">
+          <EthogramIndex
+            behaviours={behaviours.data}
+            isLoading={behaviours.isPending}
+            isError={behaviours.isError}
+            selected={runSearch.isPending ? null : (current?.behaviourCode ?? null)}
+            disabled={runSearch.isPending}
+            onSelect={(code) => {
+              start({ text: '', behaviourCode: code });
+            }}
+          />
+        </div>
+
+        <div className="grid min-w-0 content-start gap-6">
+          <SearchBar
+            // Change de `key` quand la recherche change : le champ est réinitialisé.
+            key={current?.id ?? 'none'}
+            initialText={current?.text ?? ''}
+            pending={runSearch.isPending}
+            onSubmit={(text) => {
+              start({ text, behaviourCode: null });
+            }}
+          />
+
+          {current && !runSearch.isPending && (
+            <div className="flex flex-wrap items-baseline justify-between gap-2 border-b border-line pb-3">
+              <p className="font-display text-xl">
+                {current.behaviourCode ? (
+                  <>
+                    <span className="mr-2 font-mono text-sm text-stamp">
+                      {current.behaviourCode}
+                    </span>
+                    {behaviourLabel ?? current.behaviourCode}
+                  </>
+                ) : (
+                  <>« {current.text} »</>
+                )}
+              </p>
+              <p className="font-mono text-xs text-ink-muted">
+                {t.summary(search.data?.results.length ?? 0, search.data?.iteration ?? 0)}
+              </p>
+            </div>
+          )}
+
+          <SearchBody
+            queryId={queryId}
+            isRunning={runSearch.isPending}
+            runError={runSearch.error}
+            onRetryRun={() => {
+              if (runSearch.variables) start(runSearch.variables);
+            }}
+            onStart={start}
+            search={search}
+            clips={clips}
+            verdicts={verdicts}
+            onReset={() => {
+              setParams({});
+            }}
+          />
+        </div>
+      </div>
+    </>
+  );
+}
+
+interface SearchBodyProps {
+  queryId: string | null;
+  isRunning: boolean;
+  runError: Error | null;
+  onRetryRun: () => void;
+  onStart: (input: SearchInput) => void;
+  onReset: () => void;
+  search: ReturnType<typeof useSearchResults>;
+  clips: ReturnType<typeof useClipsById>;
+  verdicts: ReadonlyMap<string, Verdict>;
+}
+
+/** Choisit l'état à afficher : chargement, erreur, introuvable, départ ou résultats. */
+function SearchBody({
+  queryId,
+  isRunning,
+  runError,
+  onRetryRun,
+  onStart,
+  onReset,
+  search,
+  clips,
+  verdicts,
+}: SearchBodyProps) {
+  if (isRunning) return <ResultsSkeleton />;
+
+  if (runError) {
+    return <ErrorState title={t.errorTitle} message={runError.message} onRetry={onRetryRun} />;
+  }
+
+  if (queryId === null) return <StartState onStart={onStart} />;
+
+  if (search.error instanceof ApiError && search.error.code === 'not_found') {
+    return (
+      <EmptyState
+        icon={SearchX}
+        title={t.notFoundTitle}
+        action={<Button onClick={onReset}>{t.newSearch}</Button>}
+      >
+        {t.notFoundBody}
+      </EmptyState>
+    );
+  }
+
+  const error = search.error ?? clips.error;
+  if (error) {
+    return (
+      <ErrorState
+        title={t.errorTitle}
+        message={error.message}
+        onRetry={() => {
+          if (search.error) void search.refetch();
+          if (clips.error) void clips.refetch();
+        }}
+      />
+    );
+  }
+
+  if (!search.data || !clips.data) return <ResultsSkeleton />;
+
+  if (search.data.results.length === 0) return <EmptyState icon={Search} title={t.noResults} />;
+
+  return (
+    <ResultsGrid
+      // Nouvelle recherche ou nouvelle itération : la grille repart du premier lot.
+      key={`${search.data.query.id}:${String(search.data.iteration)}`}
+      results={search.data.results}
+      clipsById={clips.data}
+      verdicts={verdicts}
+    />
+  );
+}
+
+/** État de départ : aucune recherche, avec des exemples cliquables. */
+function StartState({ onStart }: { onStart: (input: SearchInput) => void }) {
+  return (
+    <EmptyState icon={Search} title={t.startTitle}>
+      <p>{t.startBody}</p>
+      <ul className="mt-4 flex flex-wrap justify-center gap-2">
+        {t.examples.map((example) => (
+          <li key={example.text || example.behaviourCode}>
+            <Button
+              size="sm"
+              onClick={() => {
+                onStart(example);
+              }}
+            >
+              {example.behaviourCode ?? `« ${example.text} »`}
+            </Button>
+          </li>
+        ))}
+      </ul>
+    </EmptyState>
+  );
+}

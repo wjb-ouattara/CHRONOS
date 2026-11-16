@@ -51,4 +51,13 @@ describe('CameraStrip', () => {
     const { container } = render(<CameraStrip {...base} isNight={false} />);
     expect(container).not.toHaveTextContent('IR');
   });
+
+  it('version compacte : heure sans secondes, phrase complète inchangée', () => {
+    const { container } = render(<CameraStrip {...base} compact />);
+    const visible = container.querySelector('[aria-hidden="true"]');
+    expect(visible).toHaveTextContent('2025-03-04 05:12');
+    expect(visible).not.toHaveTextContent('05:12:08');
+    expect(visible).toHaveTextContent('S03 · CAM-17');
+    expect(screen.getByText(/2025-03-04 à 05:12:08/)).toBeInTheDocument();
+  });
 });
