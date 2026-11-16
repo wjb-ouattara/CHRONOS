@@ -8,6 +8,64 @@ export const strings = {
   },
   demo: {
     banner: 'Données de démonstration',
+    detail: 'Vidéos et chiffres fictifs. Aucun résultat réel.',
+  },
+  layout: {
+    skipLink: 'Aller au contenu',
+    brand: 'Chronos',
+    brandLabel: 'Chronos Ethogram, accueil',
+    navLabel: 'Navigation principale',
+    shortcuts: 'Raccourcis',
+    internal: 'interne',
+    titleSuffix: 'Chronos Ethogram',
+  },
+  nav: {
+    collection: 'Collection',
+    search: 'Recherche',
+    session: 'Session',
+    design: 'Design',
+  },
+  pages: {
+    collection: {
+      title: 'Collection',
+      emptyTitle: 'Vue d’ensemble à venir',
+      emptyBody: 'La mosaïque de la collection et les recherches récentes arrivent à l’étape 10.',
+    },
+    search: {
+      title: 'Recherche',
+      emptyTitle: 'Recherche à venir',
+      emptyBody:
+        'La barre de recherche, l’éthogramme et la grille de résultats arrivent à l’étape 6.',
+    },
+    session: {
+      title: 'Session & export',
+      emptyTitle: 'Session à venir',
+      emptyBody: 'Le tableau des validations, l’export CSV et l’horloge 24 h arrivent à l’étape 9.',
+    },
+    notFound: {
+      title: 'Page introuvable',
+      body: 'Cette adresse ne correspond à aucun écran de Chronos.',
+      action: 'Retour à la collection',
+    },
+    routeError: {
+      title: 'Cet écran a rencontré un problème',
+      body: 'Une erreur inattendue s’est produite. Rechargez la page pour réessayer.',
+      action: 'Recharger la page',
+    },
+  },
+  states: {
+    retry: 'Réessayer',
+    loading: 'Chargement en cours',
+  },
+  shortcuts: {
+    title: 'Raccourcis clavier',
+    intro: 'Les raccourcis sont désactivés pendant la saisie dans un champ.',
+    close: 'Fermer',
+    soon: 'bientôt',
+    groups: {
+      global: 'Partout',
+      search: 'Recherche et loupe',
+    },
   },
   theme: {
     lightLabel: 'Thème clair',
@@ -29,9 +87,10 @@ export const strings = {
     spacingIntro: 'Multiples de 4 px (règle Tailwind par défaut).',
     darkTheme: 'Sombre',
     lightTheme: 'Clair',
+    states: 'États vide, chargement, erreur',
+    statesIntro: 'Chaque écran a ces trois états.',
     pass: 'AA',
     fail: 'Échec',
-    backHome: 'Retour à l’accueil',
     gallery: {
       buttonIntro:
         'Principal, secondaire, discret. États : normal, avec icône, icône seule, en cours, désactivé.',
@@ -62,10 +121,11 @@ export const strings = {
       noteHint: 'Facultatif. Exportée dans la colonne note du CSV.',
       notePlaceholder: 'ex. individu juvénile',
       noteError: 'La note ne peut pas contenir de point-virgule.',
+      emptyTitle: 'Aucun clip validé',
+      emptyBody: 'Validez des clips depuis la recherche : ils apparaîtront ici.',
+      errorTitle: 'Impossible de charger les résultats',
+      errorBody: 'Le service ne répond pas. Réessayez dans un instant.',
     },
-  },
-  home: {
-    designLink: 'Voir le système de design',
   },
   moon: {
     unknown: 'Phase inconnue',

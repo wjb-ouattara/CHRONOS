@@ -1,7 +1,5 @@
-import { Link } from 'react-router';
-
 import type { Theme } from '@/app/theme/theme';
-import { ThemeToggle } from '@/components/ui/ThemeToggle';
+import { PageTitle } from '@/components/ui/PageTitle';
 import { strings } from '@/content/strings';
 import { contrastRatio } from '@/lib/contrast';
 import { parseThemes } from '@/styles/parse-themes';
@@ -36,19 +34,10 @@ const formatRatio = (ratio: number) =>
 
 export function DesignPage() {
   return (
-    <main className="mx-auto max-w-6xl px-8 py-12">
-      <header className="flex flex-wrap items-end justify-between gap-6 border-b border-line pb-8">
-        <div>
-          <p className="font-mono text-xs tracking-stamp text-stamp uppercase">/design</p>
-          <h1 className="mt-2 font-display text-4xl">{t.title}</h1>
-          <p className="mt-3 max-w-prose text-ink-muted">{t.intro}</p>
-        </div>
-        <div className="flex items-center gap-4">
-          <Link to="/" className="text-sm text-accent underline underline-offset-4">
-            {t.backHome}
-          </Link>
-          <ThemeToggle />
-        </div>
+    <div>
+      <header className="border-b border-line pb-8">
+        <PageTitle eyebrow="/design">{t.title}</PageTitle>
+        <p className="mt-3 max-w-prose text-ink-muted">{t.intro}</p>
       </header>
 
       <Section title={t.colors} intro={t.colorsIntro}>
@@ -142,7 +131,7 @@ export function DesignPage() {
       </div>
 
       <ComponentGallery />
-    </main>
+    </div>
   );
 }
 

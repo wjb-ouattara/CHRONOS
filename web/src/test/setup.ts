@@ -8,3 +8,35 @@ import { afterEach } from 'vitest';
 afterEach(() => {
   cleanup();
 });
+
+/*
+ * jsdom (le navigateur simulé des tests) n'implémente pas showModal() ni
+ * close() de <dialog>. Simulation minimale du comportement réel :
+ *  - showModal()/close() posent/retirent l'attribut `open` ;
+ *  - close() émet l'événement `close` ;
+ *  - Échap sur une fenêtre ouverte émet `cancel`, comme un vrai navigateur.
+ * Uniquement pour les tests : le vrai navigateur fournit tout cela.
+ */
+if (typeof HTMLDialogElement !== 'undefined' && !('showModal' in HTMLDialogElement.prototype)) {
+  Object.assign(HTMLDialogElement.prototype, {
+    showModal(this: HTMLDialogElement) {
+      this.setAttribute('open', '');
+    },
+    show(this: HTMLDialogElement) {
+      this.setAttribute('open', '');
+    },
+    close(this: HTMLDialogElement) {
+      if (!this.hasAttribute('open')) return;
+      this.removeAttribute('open');
+      this.dispatchEvent(new Event('close'));
+    },
+  });
+  document.addEventListener('keydown', (event) => {
+    if (event.key !== 'Escape') return;
+    const dialog = document.querySelector('dialog[open]');
+    if (!dialog) return;
+    const cancel = new Event('cancel', { cancelable: true });
+    dialog.dispatchEvent(cancel);
+    if (!cancel.defaultPrevented) (dialog as HTMLDialogElement).close();
+  });
+}

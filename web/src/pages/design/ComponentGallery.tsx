@@ -1,4 +1,4 @@
-import { Plus, Search, Settings2 } from 'lucide-react';
+import { Inbox, Plus, Search, Settings2 } from 'lucide-react';
 import { useState, type ReactNode } from 'react';
 
 import type { Theme } from '@/app/theme/theme';
@@ -6,6 +6,7 @@ import { CameraStrip } from '@/components/domain/CameraStrip';
 import { ProceduralThumbnail } from '@/components/domain/ProceduralThumbnail';
 import { RelevanceTimeline } from '@/components/domain/RelevanceTimeline';
 import { Button } from '@/components/ui/Button';
+import { EmptyState, ErrorState, LoadingRegion, Skeleton } from '@/components/ui/states';
 import { TextField } from '@/components/ui/TextField';
 import { VerdictBadge } from '@/components/ui/VerdictBadge';
 import { strings } from '@/content/strings';
@@ -162,6 +163,27 @@ export function ComponentGallery() {
                   className="mt-6"
                 />
               </div>
+            </div>
+          )}
+        </BothThemes>
+      </Section>
+
+      <Section id="states" title={t.states} intro={t.statesIntro}>
+        <BothThemes>
+          {() => (
+            <div className="grid gap-4">
+              <EmptyState icon={Inbox} title={g.emptyTitle}>
+                {g.emptyBody}
+              </EmptyState>
+              <LoadingRegion className="grid grid-cols-3 gap-2">
+                {[0, 1, 2].map((i) => (
+                  <div key={i} className="grid gap-1.5">
+                    <Skeleton className="aspect-[720/404] w-full" />
+                    <Skeleton className="h-3 w-3/4" />
+                  </div>
+                ))}
+              </LoadingRegion>
+              <ErrorState title={g.errorTitle} message={g.errorBody} onRetry={() => undefined} />
             </div>
           )}
         </BothThemes>
