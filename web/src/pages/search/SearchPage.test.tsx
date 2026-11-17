@@ -2,13 +2,13 @@ import { screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, it } from 'vitest';
 
-import { createTestApi, renderApp } from '@/test/render-app';
+import { createTestApi, findResultsList, renderApp } from '@/test/render-app';
 
 import { PAGE_SIZE } from './ResultsGrid';
 
 /** Attend la grille de résultats et renvoie ses cartes. */
 async function findCards() {
-  const list = await screen.findByRole('list', { name: 'Résultats classés par pertinence' });
+  const list = await findResultsList();
   return within(list).getAllByRole('article');
 }
 

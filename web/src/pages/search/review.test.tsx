@@ -3,13 +3,13 @@ import userEvent from '@testing-library/user-event';
 import { describe, expect, it } from 'vitest';
 
 import type { ChronosApi } from '@/api/types';
-import { createTestApi, renderApp } from '@/test/render-app';
+import { createTestApi, findResultsList, renderApp } from '@/test/render-app';
 
 /** Prépare une recherche TOOL et rend l'écran directement dessus. */
 async function setup(api: ChronosApi = createTestApi(), extraParams = '') {
   const { query } = await api.search({ text: '', behaviourCode: 'TOOL' });
   const view = renderApp({ path: `/recherche?q=${query.id}${extraParams}`, api });
-  await screen.findByRole('list', { name: 'Résultats classés par pertinence' });
+  await findResultsList();
   return { ...view, queryId: query.id };
 }
 

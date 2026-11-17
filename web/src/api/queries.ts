@@ -116,3 +116,15 @@ export function useSaveValidation(queryId: string | null) {
         : undefined,
   });
 }
+
+/** Reclasse une recherche à partir de ses validations (itération + 1). */
+export function useRerank() {
+  const api = useApi();
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (queryId: string) => api.rerank(queryId),
+    onSuccess: (response: SearchResponse) => {
+      queryClient.setQueryData(queryKeys.search(response.query.id), response);
+    },
+  });
+}

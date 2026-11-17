@@ -1,6 +1,7 @@
 // Utilitaires de TEST : rendre l'application avec ses fournisseurs, une API
 // sans latence et un routeur en mémoire.
-import { render } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
+import { MotionConfig } from 'motion/react';
 import { createMemoryRouter, RouterProvider, type RouteObject } from 'react-router';
 
 import { ApiProvider } from '@/api/ApiProvider';
@@ -45,9 +46,20 @@ export function renderApp({
   const view = render(
     <ThemeProvider>
       <ApiProvider api={api} queryClient={queryClient}>
-        <RouterProvider router={router} />
+        <MotionConfig reducedMotion="user">
+          <RouterProvider router={router} />
+        </MotionConfig>
       </ApiProvider>
     </ThemeProvider>,
   );
   return { ...view, router, api, queryClient };
+}
+
+/**
+ * Attend la grille de résultats. Délai porté à 5 s : rendre 24 cartes SVG
+ * dans jsdom (navigateur simulé, lent) dépasse parfois le 1 s par défaut
+ * quand toute la suite de tests tourne en parallèle.
+ */
+export function findResultsList() {
+  return screen.findByRole('list', { name: 'Résultats classés par pertinence' }, { timeout: 5000 });
 }

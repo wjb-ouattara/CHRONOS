@@ -1,4 +1,4 @@
-import { Search, SearchX } from 'lucide-react';
+import { ArrowDownUp, Search, SearchX } from 'lucide-react';
 import { useSearchParams } from 'react-router';
 
 import { ApiError } from '@/api/errors';
@@ -21,6 +21,7 @@ import { EthogramIndex } from './EthogramIndex';
 import { Loupe } from './Loupe';
 import { ResultsGrid, ResultsSkeleton } from './ResultsGrid';
 import { SearchBar } from './SearchBar';
+import { type RankChange, useRerankFlow } from './useRerankFlow';
 import { useReview } from './useReview';
 
 const t = strings.pages.search;
@@ -49,6 +50,7 @@ export function SearchPage() {
   };
 
   const review = useReview(queryId, search.data?.results, validations.data);
+  const rerank = useRerankFlow(queryId, search.data, validations.data);
   const selectedClip = review.selected && clips.data?.get(review.selected.clipId);
   const loupeOpen = review.selected !== undefined && selectedClip !== undefined;
 
@@ -112,10 +114,34 @@ export function SearchPage() {
               <p className="font-mono text-xs text-ink-muted">
                 {t.summary(search.data?.results.length ?? 0, search.data?.iteration ?? 0)}
               </p>
-              {/* Compteur de session : où en est la revue de cette recherche. */}
-              <p className="w-full font-mono text-xs text-ink">
-                {t.session(verdicts.size, counts.yes, counts.no, counts.unsure)}
-              </p>
+              {/* Compteur de session et reclassement : le cœur de la boucle de revue. */}
+              <div className="flex w-full flex-wrap items-center justify-between gap-3 pt-1">
+                <p className="font-mono text-xs text-ink">
+                  {t.session(verdicts.size, counts.yes, counts.no, counts.unsure)}
+                </p>
+                <div className="grid justify-items-end gap-1">
+                  <Button
+                    variant="primary"
+                    size="sm"
+                    icon={ArrowDownUp}
+                    aria-keyshortcuts="r"
+                    disabled={!rerank.canRerank}
+                    loading={rerank.pending}
+                    aria-describedby={rerank.canRerank ? undefined : 'rerank-hint'}
+                    onClick={rerank.run}
+                  >
+                    {t.rerank}
+                  </Button>
+                  {!rerank.canRerank && (
+                    <p id="rerank-hint" className="text-xs text-ink-muted">
+                      {t.rerankHint}
+                    </p>
+                  )}
+                </div>
+              </div>
+              {rerank.failed && (
+                <ErrorState title={t.rerankError} onRetry={rerank.run} className="w-full py-4" />
+              )}
             </div>
           )}
 
@@ -135,6 +161,8 @@ export function SearchPage() {
               review.open(clipId);
             }}
             compact={loupeOpen}
+            rankChanges={rerank.rankChanges}
+            sweepKey={rerank.sweepKey}
             onReset={() => {
               setParams({});
             }}
@@ -164,9 +192,12 @@ export function SearchPage() {
         )}
       </div>
 
-      {/* Annonce discrète pour les lecteurs d'écran après chaque verdict. */}
+      {/* Annonces discrètes pour les lecteurs d'écran (verdicts, reclassement). */}
       <p aria-live="polite" className="sr-only">
         {review.announcement}
+      </p>
+      <p aria-live="polite" className="sr-only">
+        {rerank.announcement}
       </p>
     </>
   );
@@ -185,6 +216,8 @@ interface SearchBodyProps {
   selectedId: string | null;
   onOpen: (clipId: string) => void;
   compact: boolean;
+  rankChanges: ReadonlyMap<string, RankChange> | undefined;
+  sweepKey: number | null;
 }
 
 /** Choisit l'état à afficher : chargement, erreur, introuvable, départ ou résultats. */
@@ -201,6 +234,8 @@ function SearchBody({
   selectedId,
   onOpen,
   compact,
+  rankChanges,
+  sweepKey,
 }: SearchBodyProps) {
   if (isRunning) return <ResultsSkeleton />;
 
@@ -242,14 +277,17 @@ function SearchBody({
 
   return (
     <ResultsGrid
-      // Nouvelle recherche ou nouvelle itération : la grille repart du premier lot.
-      key={`${search.data.query.id}:${String(search.data.iteration)}`}
+      // Nouvelle RECHERCHE seulement (pas l'itération) : les cartes sont conservées
+      // au reclassement, pour pouvoir glisser vers leur nouveau rang.
+      key={search.data.query.id}
       results={search.data.results}
       clipsById={clips.data}
       verdicts={verdicts}
       selectedId={selectedId}
       onOpen={onOpen}
       compact={compact}
+      rankChanges={rankChanges}
+      sweepKey={sweepKey}
     />
   );
 }

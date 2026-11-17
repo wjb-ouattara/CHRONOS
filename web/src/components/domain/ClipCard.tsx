@@ -19,6 +19,11 @@ interface ClipCardProps {
   selected?: boolean;
   /** Absent : carte non cliquable (ex. vitrine /design). */
   onOpen?: (clipId: string) => void;
+  /**
+   * Déplacement depuis le dernier reclassement : places gagnées (> 0),
+   * perdues (< 0), `'new'` (entré dans les résultats affichés) ou absent.
+   */
+  rankChange?: number | 'new';
   className?: string;
 }
 
@@ -29,6 +34,7 @@ export function ClipCard({
   verdict,
   selected = false,
   onOpen,
+  rankChange,
   className,
 }: ClipCardProps) {
   return (
@@ -85,7 +91,10 @@ export function ClipCard({
               </span>
             )}
           </h3>
-          <VerdictBadge verdict={verdict} size="sm" />
+          <span className="flex items-center gap-2">
+            {rankChange !== undefined && rankChange !== 0 && <RankChange change={rankChange} />}
+            <VerdictBadge verdict={verdict} size="sm" />
+          </span>
         </div>
         <RelevanceTimeline scores={result.secondScores} bestMomentS={result.bestMomentS} />
         <p className="flex justify-between font-mono text-2xs text-ink-muted" title={t.scoreTitle}>
@@ -94,6 +103,29 @@ export function ClipCard({
         </p>
       </div>
     </article>
+  );
+}
+
+/**
+ * Indicateur de déplacement après reclassement : flèche + nombre (jamais la
+ * couleur seule), phrase complète pour les lecteurs d'écran.
+ */
+function RankChange({ change }: { change: number | 'new' }) {
+  const label =
+    change === 'new' ? t.rankNewLong : change > 0 ? t.rankUp(change) : t.rankDown(-change);
+  const visual =
+    change === 'new' ? t.rankNew : `${change > 0 ? '↑' : '↓'}${String(Math.abs(change))}`;
+  return (
+    <span
+      data-rank-change={change}
+      className={cn(
+        'font-mono text-2xs',
+        change === 'new' || change > 0 ? 'text-accent' : 'text-ink-muted',
+      )}
+    >
+      <span aria-hidden="true">{visual}</span>
+      <span className="sr-only">{label}</span>
+    </span>
   );
 }
 

@@ -43,3 +43,9 @@ Trois lignes par session : fait, appris, prochaine action.
 - **Fait :** étape 7, loupe (lecteur simulé, frise agrandie, verdict, note, métadonnées), validation au clavier J/K/Y/N/U/P/Échap avec passage automatique, mise à jour optimiste avec retour en arrière, compteur de session, clip ouvert dans l'adresse.
 - **Appris :** des enregistrements qui se chevauchent imposent de ne relire le cache qu'après le dernier ; un « bouton étiré » rend une carte entière cliquable avec un seul élément focalisable.
 - **Prochaine action :** étape 8, reclassement animé (« Apprendre de mes validations », Motion).
+
+## 2026-11-16 (étape 8)
+
+- **Fait :** étape 8, reclassement animé avec Motion (cartes qui glissent, entrées/sorties en fondu, balayage phosphore, indicateurs ↑ ↓ nouveau), bouton + touche R, annonce pour lecteurs d'écran, mouvement réduit respecté.
+- **Appris :** une `key` qui change recrée les composants et empêche toute animation de déplacement ; une animation se vérifie mieux en mesurant les positions dans le temps qu'avec des captures trop lentes.
+- **Prochaine action :** étape 9, écran Session & export (tableau, aperçu et téléchargement du CSV, horloge 24 h).

@@ -62,6 +62,11 @@ export const strings = {
       session: (total: number, yes: number, no: number, unsure: number) =>
         `${String(total)} validés · ${String(yes)} oui · ${String(no)} non · ${String(unsure)} incertains`,
       announce: (clipId: string, verdict: string) => `${clipId} : ${verdict}`,
+      rerank: 'Apprendre de mes validations',
+      rerankHint: 'Validez au moins un clip (oui ou non) pour reclasser.',
+      rerankError: 'Reclassement impossible.',
+      rerankAnnounce: (iteration: number, up: number, entered: number) =>
+        `Résultats reclassés (itération ${String(iteration)}) : ${String(up)} clips remontés, ${String(entered)} nouveaux dans les premiers résultats.`,
     },
     loupe: {
       label: (clipId: string) => `Loupe, clip ${clipId}`,
@@ -99,6 +104,10 @@ export const strings = {
       scoreTitle: 'Score simulé à partir de données fictives : ce n’est pas un résultat réel.',
       label: (rank: number, clipId: string) => `Rang ${String(rank)}, clip ${clipId}`,
       open: (rank: number, clipId: string) => `Ouvrir le clip ${clipId} (rang ${String(rank)})`,
+      rankNew: 'nouveau',
+      rankNewLong: 'nouveau dans les premiers résultats',
+      rankUp: (n: number) => `monté de ${String(n)} place${n > 1 ? 's' : ''}`,
+      rankDown: (n: number) => `descendu de ${String(n)} place${n > 1 ? 's' : ''}`,
     },
     session: {
       title: 'Session & export',
@@ -124,7 +133,6 @@ export const strings = {
     title: 'Raccourcis clavier',
     intro: 'Les raccourcis sont désactivés pendant la saisie dans un champ.',
     close: 'Fermer',
-    soon: 'bientôt',
     groups: {
       global: 'Partout',
       search: 'Recherche et loupe',

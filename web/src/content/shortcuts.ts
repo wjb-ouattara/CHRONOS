@@ -12,8 +12,6 @@ export interface Shortcut {
   label: string;
   description: string;
   group: ShortcutGroup;
-  /** `false` tant que l'écran correspondant n'est pas construit. */
-  available: boolean;
 }
 
 export const shortcuts = [
@@ -23,7 +21,6 @@ export const shortcuts = [
     label: '?',
     description: 'Afficher ou masquer cette aide',
     group: 'global',
-    available: true,
   },
   {
     id: 'focusSearch',
@@ -31,7 +28,6 @@ export const shortcuts = [
     label: '/',
     description: 'Aller à la barre de recherche',
     group: 'search',
-    available: true,
   },
   {
     id: 'next',
@@ -39,7 +35,6 @@ export const shortcuts = [
     label: 'J',
     description: 'Clip suivant',
     group: 'search',
-    available: true,
   },
   {
     id: 'previous',
@@ -47,7 +42,6 @@ export const shortcuts = [
     label: 'K',
     description: 'Clip précédent',
     group: 'search',
-    available: true,
   },
   {
     id: 'yes',
@@ -55,7 +49,6 @@ export const shortcuts = [
     label: 'Y',
     description: 'Valider « oui »',
     group: 'search',
-    available: true,
   },
   {
     id: 'no',
@@ -63,7 +56,6 @@ export const shortcuts = [
     label: 'N',
     description: 'Valider « non »',
     group: 'search',
-    available: true,
   },
   {
     id: 'unsure',
@@ -71,7 +63,6 @@ export const shortcuts = [
     label: 'U',
     description: 'Valider « incertain »',
     group: 'search',
-    available: true,
   },
   {
     id: 'playPause',
@@ -79,7 +70,6 @@ export const shortcuts = [
     label: 'P',
     description: 'Lecture / pause dans la loupe',
     group: 'search',
-    available: true,
   },
   {
     id: 'close',
@@ -87,7 +77,6 @@ export const shortcuts = [
     label: 'Échap',
     description: 'Fermer la loupe',
     group: 'search',
-    available: true,
   },
   {
     id: 'rerank',
@@ -95,7 +84,6 @@ export const shortcuts = [
     label: 'R',
     description: 'Apprendre de mes validations (reclasser)',
     group: 'search',
-    available: false,
   },
 ] as const satisfies readonly Shortcut[];
 

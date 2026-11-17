@@ -1,3 +1,4 @@
+import { MotionConfig } from 'motion/react';
 import { useState } from 'react';
 import { RouterProvider } from 'react-router';
 
@@ -17,7 +18,11 @@ export function App() {
   return (
     <ThemeProvider>
       <ApiProvider api={api} queryClient={queryClient}>
-        <RouterProvider router={router} />
+        {/* « user » : Motion respecte la préférence système de mouvement réduit
+            (les déplacements deviennent instantanés), pour toute l'application. */}
+        <MotionConfig reducedMotion="user">
+          <RouterProvider router={router} />
+        </MotionConfig>
       </ApiProvider>
     </ThemeProvider>
   );

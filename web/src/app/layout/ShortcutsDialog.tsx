@@ -1,7 +1,6 @@
 import { Dialog } from '@/components/ui/Dialog';
 import { shortcuts, type ShortcutGroup } from '@/content/shortcuts';
 import { strings } from '@/content/strings';
-import { cn } from '@/lib/cn';
 
 const t = strings.shortcuts;
 const groups: readonly ShortcutGroup[] = ['global', 'search'];
@@ -22,21 +21,13 @@ export function ShortcutsDialog({ open, onClose }: { open: boolean; onClose: () 
               {shortcuts
                 .filter((s) => s.group === group)
                 .map((s) => (
-                  <div
-                    key={s.id}
-                    className={cn('flex items-center gap-3', !s.available && 'text-ink-muted')}
-                  >
+                  <div key={s.id} className="flex items-center gap-3">
                     <dt>
                       <kbd className="inline-grid min-w-7 place-items-center rounded-sm border border-line-strong bg-surface px-1.5 py-0.5 font-mono text-xs">
                         {s.label}
                       </kbd>
                     </dt>
-                    <dd className="text-sm">
-                      {s.description}
-                      {!s.available && (
-                        <span className="ml-2 font-mono text-2xs uppercase">· {t.soon}</span>
-                      )}
-                    </dd>
+                    <dd className="text-sm">{s.description}</dd>
                   </div>
                 ))}
             </dl>
