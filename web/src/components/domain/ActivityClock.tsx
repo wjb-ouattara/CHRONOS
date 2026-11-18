@@ -63,10 +63,11 @@ export function ActivityClock({ counts, excluded = 0, className }: ActivityClock
         className="w-full max-w-xs overflow-visible"
       >
         <g transform={`translate(${String(CENTER)} ${String(CENTER)})`}>
-          {/* Fond : secteur de nuit (19 h → 6 h), discret. */}
+          {/* Fond : secteur de nuit (19 h → 6 h), discret. `line` à 50 % : plus sombre
+              que le fond dans les deux thèmes. */}
           <path
             d={sector({ inner: INNER, outer: OUTER, start: 19 * STEP, end: 30 * STEP }) ?? ''}
-            className="fill-surface-raised"
+            className="fill-line/50"
           />
           {/* Cercle de référence à la valeur maximale. */}
           <circle r={OUTER} className="fill-none stroke-line" strokeDasharray="2 4" />

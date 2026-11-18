@@ -1,7 +1,8 @@
 import { createBrowserRouter, type RouteObject } from 'react-router';
 
 import { DesignPage } from '@/pages/design/DesignPage';
-import { CollectionPage, NotFoundPage } from '@/pages/placeholders';
+import { CollectionPage } from '@/pages/collection/CollectionPage';
+import { NotFoundPage } from '@/pages/placeholders';
 import { SearchPage } from '@/pages/search/SearchPage';
 import { SessionPage } from '@/pages/session/SessionPage';
 

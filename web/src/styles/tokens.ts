@@ -26,6 +26,8 @@ export const colorTokens = [
   { name: 'verdict-no', usage: 'Verdict « non »' },
   { name: 'verdict-unsure', usage: 'Verdict « incertain »' },
   { name: 'danger', usage: 'Erreurs' },
+  { name: 'chart-day', usage: 'Graphiques : clips de jour' },
+  { name: 'chart-night', usage: 'Graphiques : clips de nuit' },
 ] as const satisfies readonly ColorToken[];
 
 export type ColorTokenName = (typeof colorTokens)[number]['name'];
@@ -55,6 +57,10 @@ const textColors = [
 export const contrastPairs: readonly ContrastPair[] = [
   ...textColors.flatMap((fg) => textBackgrounds.map((bg) => ({ fg, bg, min: AA_TEXT }))),
   ...textBackgrounds.map((bg) => ({ fg: 'line-strong' as const, bg, min: AA_NON_TEXT })),
+  // Marques de graphique (éléments non textuels) : 3:1 suffit.
+  ...(['chart-day', 'chart-night'] as const).flatMap((fg) =>
+    textBackgrounds.map((bg) => ({ fg, bg, min: AA_NON_TEXT })),
+  ),
   { fg: 'on-accent', bg: 'accent', min: AA_TEXT },
 ];
 

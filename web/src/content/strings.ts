@@ -28,8 +28,58 @@ export const strings = {
   pages: {
     collection: {
       title: 'Collection',
-      emptyTitle: 'Vue d’ensemble à venir',
-      emptyBody: 'La mosaïque de la collection et les recherches récentes arrivent à l’étape 10.',
+      errorTitle: 'Impossible de charger la collection',
+      newSearch: 'Nouvelle recherche',
+      stats: {
+        label: 'Chiffres clés de la collection',
+        clips: 'Clips',
+        duration: 'Durée totale',
+        durationDetail: (n: number, s: number) => `${String(n)} × ${String(s)} s`,
+        sites: 'Sites · caméras',
+        period: 'Période couverte',
+        dayNight: 'Jour / nuit',
+        dayNightDetail: (day: number, night: number) =>
+          `${String(day)} clips de jour, ${String(night)} de nuit`,
+        missing: 'Sans horodatage',
+        missingDetail: 'exclus de la frise',
+      },
+      friseTitle: 'Frise de la collection',
+      friseIntro:
+        'Chaque trait est un clip : date en horizontal, heure locale en vertical. La bande grisée marque la nuit.',
+      friseLabel: (n: number, first: string, last: string, nightShare: string) =>
+        `Frise de ${String(n)} clips horodatés, de ${first} à ${last}. ${nightShare} des clips sont de nuit.`,
+      filterLabel: 'Mettre en avant un site',
+      filterAll: 'Tous',
+      legendDay: 'Jour',
+      legendNight: 'Nuit',
+      tooltip: (clipId: string, site: string, camera: string, when: string) =>
+        `${clipId} · ${site} · ${camera} · ${when}`,
+      excluded: (n: number) =>
+        `${String(n)} clip${n > 1 ? 's' : ''} sans horodatage exclu${n > 1 ? 's' : ''} de la frise.`,
+      showData: 'Voir les données par mois',
+      hideData: 'Masquer les données',
+      dataCaption: 'Clips par mois, de jour et de nuit',
+      monthColumn: 'Mois',
+      dayColumn: 'Jour',
+      nightColumn: 'Nuit',
+      totalColumn: 'Total',
+      sitesTitle: 'Sites',
+      habitat: { forest: 'Forêt', savanna: 'Savane', mosaic: 'Mosaïque' },
+      siteLine: (cameras: number, clips: number) =>
+        `${String(cameras)} caméras · ${String(clips)} clips`,
+      nightShare: (pct: string) => `${pct} de nuit`,
+      perCamera: 'Clips par caméra',
+      recentTitle: 'Recherches récentes',
+      recentEmptyTitle: 'Aucune recherche pour l’instant',
+      recentEmptyBody:
+        'Décrivez un comportement : vos recherches et leurs validations apparaîtront ici.',
+      firstSearch: 'Lancer une première recherche',
+      recentCounts: (total: number, yes: number, no: number, unsure: number) =>
+        `${String(total)} validés · ${String(yes)} oui · ${String(no)} non · ${String(unsure)} incertains`,
+      resume: 'Reprendre',
+      resumeLabel: (title: string) => `Reprendre la recherche ${title}`,
+      session: 'Session',
+      sessionLabel: (title: string) => `Session et export de la recherche ${title}`,
     },
     search: {
       title: 'Recherche',

@@ -1,7 +1,7 @@
 // Crochets de données : les écrans passent par eux, jamais directement par l'API.
 // TanStack Query gère le cache, le chargement, les erreurs et les nouvelles tentatives.
 
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueries, useQuery, useQueryClient } from '@tanstack/react-query';
 
 import type { SearchResponse, Validation } from '@/domain/types';
 
@@ -18,6 +18,7 @@ export const queryKeys = {
   search: (queryId: string) => ['search', queryId] as const,
   validations: (queryId: string) => ['validations', queryId] as const,
   queries: ['queries'] as const,
+  sites: ['sites'] as const,
   exportCsv: (queryId: string) => ['export', queryId] as const,
 };
 
@@ -149,4 +150,26 @@ export function useExportCsv(queryId: string | null) {
     queryFn: () => api.exportCsv(queryId ?? ''),
     enabled: queryId !== null,
   });
+}
+
+/** Validations de plusieurs recherches à la fois (une requête par recherche, en parallèle). */
+export function useValidationsOf(queryIds: readonly string[]) {
+  const api = useApi();
+  return useQueries({
+    queries: queryIds.map((id) => ({
+      queryKey: queryKeys.validations(id),
+      queryFn: () => api.listValidations(id),
+    })),
+  });
+}
+
+export function useSites() {
+  const api = useApi();
+  return useQuery({ queryKey: queryKeys.sites, queryFn: () => api.listSites() });
+}
+
+/** Tous les clips, sous forme de liste (l'écran Collection les parcourt tous). */
+export function useClipList() {
+  const api = useApi();
+  return useQuery({ queryKey: queryKeys.clips, queryFn: () => api.listClips() });
 }

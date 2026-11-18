@@ -1,6 +1,5 @@
-// Écrans provisoires : chacun sera remplacé à son étape. Ils montrent déjà
-// l'état « vide » commun et posent le titre de page (focus + onglet).
-import { Compass, Library } from 'lucide-react';
+// Page 404 (les écrans provisoires des étapes précédentes ont tous été remplacés).
+import { Compass } from 'lucide-react';
 import { Link } from 'react-router';
 
 import { PageTitle } from '@/components/ui/PageTitle';
@@ -8,18 +7,6 @@ import { EmptyState } from '@/components/ui/states';
 import { strings } from '@/content/strings';
 
 const p = strings.pages;
-
-export function CollectionPage() {
-  return (
-    <>
-      <PageTitle>{p.collection.title}</PageTitle>
-      <p className="mt-3 max-w-prose text-lg text-ink-muted">{strings.app.tagline}</p>
-      <EmptyState icon={Library} title={p.collection.emptyTitle} className="mt-10">
-        {p.collection.emptyBody}
-      </EmptyState>
-    </>
-  );
-}
 
 export function NotFoundPage() {
   return (

@@ -35,6 +35,8 @@
   --color-verdict-no: var(--theme-verdict-no);
   --color-verdict-unsure: var(--theme-verdict-unsure);
   --color-danger: var(--theme-danger);
+  --color-chart-day: var(--theme-chart-day);
+  --color-chart-night: var(--theme-chart-night);
   --color-transparent: transparent;
   --color-current: currentColor;
 }

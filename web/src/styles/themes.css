@@ -26,6 +26,8 @@
   --palette-lagoon: #5fd4b8; /* « oui » : vert d'eau, distinct du phosphore */
   --palette-coral: #f2766b;
   --palette-lilac: #b7a8f0;
+  --palette-gold: #b8842a; /* graphiques : jour */
+  --palette-teal: #2e9dbf; /* graphiques : nuit (infrarouge) */
 
   /* Papier de terrain */
   --palette-paper-50: #faf7ef;
@@ -40,6 +42,8 @@
   --palette-lagoon-800: #1d6b59;
   --palette-brick-700: #a3352b;
   --palette-violet-700: #5a4aa3;
+  --palette-gold-700: #93620e;
+  --palette-teal-700: #0072a0;
 
   /* Vision infrarouge (nuit) et lumière de jour, pour les vignettes procédurales */
   --palette-ir-night-900: #0c130f;
@@ -96,6 +100,9 @@
   --theme-verdict-no: var(--palette-coral);
   --theme-verdict-unsure: var(--palette-lilac);
   --theme-danger: var(--palette-coral); /* erreurs */
+  /* Graphiques : jour / nuit (validés pour le daltonisme, ≥ 3:1 sur les fonds). */
+  --theme-chart-day: var(--palette-gold);
+  --theme-chart-night: var(--palette-teal);
 }
 
 /* Thème clair « papier de terrain » : accents désaturés et assombris
@@ -117,4 +124,6 @@
   --theme-verdict-no: var(--palette-brick-700);
   --theme-verdict-unsure: var(--palette-violet-700);
   --theme-danger: var(--palette-brick-700);
+  --theme-chart-day: var(--palette-gold-700);
+  --theme-chart-night: var(--palette-teal-700);
 }

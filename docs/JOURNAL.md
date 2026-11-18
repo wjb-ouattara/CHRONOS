@@ -55,3 +55,9 @@ Trois lignes par session : fait, appris, prochaine action.
 - **Fait :** étape 9, écran Session & export (sélecteur de recherche, tableau trié et filtré, aperçu et téléchargement du CSV conforme à `ExportRow`, horloge d'activité 24 h avec vue tableau), lien depuis la recherche.
 - **Appris :** une échelle radiale rend la surface des barres proportionnelle aux valeurs ; un fichier se fabrique dans le navigateur avec un Blob ; une zone qui défile doit être focalisable au clavier.
 - **Prochaine action :** étape 10, écran Collection (vue d'ensemble, mosaïque, recherches récentes).
+
+## 2026-11-18 (étape 10)
+
+- **Fait :** étape 10, écran Collection (chiffres clés calculés, frise actogramme date × heure avec mise en avant d'un site et vue tableau mensuelle, cartes de sites, recherches récentes), tokens `chart-day` / `chart-night` validés pour le daltonisme.
+- **Appris :** un même token peut changer de sens selon le thème (`surface-raised` est plus clair en thème clair) : la bande de nuit utilise `line` à 50 %, plus sombre que le fond dans les deux thèmes.
+- **Prochaine action :** étape 11, finitions (audit d'accessibilité, tablette, Lighthouse, poids du JavaScript, relecture).
