@@ -17,6 +17,8 @@ export const queryKeys = {
   clips: ['clips'] as const,
   search: (queryId: string) => ['search', queryId] as const,
   validations: (queryId: string) => ['validations', queryId] as const,
+  queries: ['queries'] as const,
+  exportCsv: (queryId: string) => ['export', queryId] as const,
 };
 
 export function useBehaviours() {
@@ -66,6 +68,7 @@ export function useRunSearch() {
     onSuccess: (response: SearchResponse) => {
       queryClient.setQueryData(queryKeys.search(response.query.id), response);
       queryClient.setQueryData(queryKeys.validations(response.query.id), []);
+      void queryClient.invalidateQueries({ queryKey: queryKeys.queries });
     },
   });
 }
@@ -110,10 +113,13 @@ export function useSaveValidation(queryId: string | null) {
     // mais seulement quand c'est le DERNIER enregistrement en cours. Avec la
     // validation au clavier, plusieurs enregistrements se chevauchent : une
     // relecture trop tôt effacerait brièvement les badges des suivants.
-    onSettled: () =>
-      queryClient.isMutating({ mutationKey }) === 1
+    onSettled: () => {
+      // Le CSV dépend des validations : il est à recalculer dans tous les cas.
+      void queryClient.invalidateQueries({ queryKey: queryKeys.exportCsv(queryId ?? '') });
+      return queryClient.isMutating({ mutationKey }) === 1
         ? queryClient.invalidateQueries({ queryKey: key })
-        : undefined,
+        : undefined;
+    },
   });
 }
 
@@ -126,5 +132,21 @@ export function useRerank() {
     onSuccess: (response: SearchResponse) => {
       queryClient.setQueryData(queryKeys.search(response.query.id), response);
     },
+  });
+}
+
+/** Recherches passées (la plus récente d'abord). */
+export function useQueryList() {
+  const api = useApi();
+  return useQuery({ queryKey: queryKeys.queries, queryFn: () => api.listQueries() });
+}
+
+/** Contenu du CSV d'une recherche. Invalidé à chaque nouvelle validation. */
+export function useExportCsv(queryId: string | null) {
+  const api = useApi();
+  return useQuery({
+    queryKey: queryKeys.exportCsv(queryId ?? ''),
+    queryFn: () => api.exportCsv(queryId ?? ''),
+    enabled: queryId !== null,
   });
 }

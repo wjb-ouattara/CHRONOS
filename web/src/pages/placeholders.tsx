@@ -1,6 +1,6 @@
 // Écrans provisoires : chacun sera remplacé à son étape. Ils montrent déjà
 // l'état « vide » commun et posent le titre de page (focus + onglet).
-import { Compass, Library, Table2 } from 'lucide-react';
+import { Compass, Library } from 'lucide-react';
 import { Link } from 'react-router';
 
 import { PageTitle } from '@/components/ui/PageTitle';
@@ -16,17 +16,6 @@ export function CollectionPage() {
       <p className="mt-3 max-w-prose text-lg text-ink-muted">{strings.app.tagline}</p>
       <EmptyState icon={Library} title={p.collection.emptyTitle} className="mt-10">
         {p.collection.emptyBody}
-      </EmptyState>
-    </>
-  );
-}
-
-export function SessionPage() {
-  return (
-    <>
-      <PageTitle>{p.session.title}</PageTitle>
-      <EmptyState icon={Table2} title={p.session.emptyTitle} className="mt-10">
-        {p.session.emptyBody}
       </EmptyState>
     </>
   );

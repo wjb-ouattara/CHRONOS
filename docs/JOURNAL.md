@@ -49,3 +49,9 @@ Trois lignes par session : fait, appris, prochaine action.
 - **Fait :** étape 8, reclassement animé avec Motion (cartes qui glissent, entrées/sorties en fondu, balayage phosphore, indicateurs ↑ ↓ nouveau), bouton + touche R, annonce pour lecteurs d'écran, mouvement réduit respecté.
 - **Appris :** une `key` qui change recrée les composants et empêche toute animation de déplacement ; une animation se vérifie mieux en mesurant les positions dans le temps qu'avec des captures trop lentes.
 - **Prochaine action :** étape 9, écran Session & export (tableau, aperçu et téléchargement du CSV, horloge 24 h).
+
+## 2026-11-17 (étape 9)
+
+- **Fait :** étape 9, écran Session & export (sélecteur de recherche, tableau trié et filtré, aperçu et téléchargement du CSV conforme à `ExportRow`, horloge d'activité 24 h avec vue tableau), lien depuis la recherche.
+- **Appris :** une échelle radiale rend la surface des barres proportionnelle aux valeurs ; un fichier se fabrique dans le navigateur avec un Blob ; une zone qui défile doit être focalisable au clavier.
+- **Prochaine action :** étape 10, écran Collection (vue d'ensemble, mosaïque, recherches récentes).

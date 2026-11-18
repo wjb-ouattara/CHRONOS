@@ -1,5 +1,5 @@
 import { ArrowDownUp, Search, SearchX } from 'lucide-react';
-import { useSearchParams } from 'react-router';
+import { Link, useSearchParams } from 'react-router';
 
 import { ApiError } from '@/api/errors';
 import {
@@ -120,18 +120,26 @@ export function SearchPage() {
                   {t.session(verdicts.size, counts.yes, counts.no, counts.unsure)}
                 </p>
                 <div className="grid justify-items-end gap-1">
-                  <Button
-                    variant="primary"
-                    size="sm"
-                    icon={ArrowDownUp}
-                    aria-keyshortcuts="r"
-                    disabled={!rerank.canRerank}
-                    loading={rerank.pending}
-                    aria-describedby={rerank.canRerank ? undefined : 'rerank-hint'}
-                    onClick={rerank.run}
-                  >
-                    {t.rerank}
-                  </Button>
+                  <div className="flex items-center gap-3">
+                    <Link
+                      to={`/session?q=${encodeURIComponent(current.id)}`}
+                      className="text-sm text-accent underline underline-offset-4"
+                    >
+                      {t.sessionLink}
+                    </Link>
+                    <Button
+                      variant="primary"
+                      size="sm"
+                      icon={ArrowDownUp}
+                      aria-keyshortcuts="r"
+                      disabled={!rerank.canRerank}
+                      loading={rerank.pending}
+                      aria-describedby={rerank.canRerank ? undefined : 'rerank-hint'}
+                      onClick={rerank.run}
+                    >
+                      {t.rerank}
+                    </Button>
+                  </div>
                   {!rerank.canRerank && (
                     <p id="rerank-hint" className="text-xs text-ink-muted">
                       {t.rerankHint}
